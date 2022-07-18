@@ -6,6 +6,11 @@ use Ratchet\ConnectionInterface;
 include_once '../src/User.php';
 
 class Chat implements MessageComponentInterface {
+    /* TODO: Change clients to an array of User objects 
+     * The time complexity of finding the user to remove them from the room is O(n^2)
+     * which can be reduced among other tasks.
+     */ 
+    
     protected $clients; // array of connections
     protected $rooms; // array of room names => array of User objects
 
@@ -21,13 +26,6 @@ class Chat implements MessageComponentInterface {
         echo "New connection! ({$conn->resourceId})\n";
     }
 
-    // Adds user to room. If room doesn't exist, create it.
-    private function addUserToRoom($conn, $room_id, $username) {
-        if (!isset($this->rooms[$room_id])) $this->rooms[$room_id] = array();
-        $this->rooms[$room_id][] = new \User($username, $room_id, $conn);
-        echo "Added user to room! ({$conn->resourceId})\n";
-    }
-
     public function onMessage(ConnectionInterface $from, $msg) {
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
@@ -36,39 +34,94 @@ class Chat implements MessageComponentInterface {
 
         if (isset($new_msg['initial_room_connection'])) {
             $this->addUserToRoom($from, $new_msg['initial_room_connection'], $new_msg['username']);
+            $this->updateUserList($new_msg['initial_room_connection']);
+        } else if (isset($new_msg['rating'])) {
+            $this->updateUserPoints($new_msg['username'], $new_msg['rating'], $new_msg['room_id']);
+            $this->updateUserList($new_msg['room_id']);
         } else {
+            /*
             // Send message to all users in the same room
             foreach ($this->rooms[$new_msg['room_id']] as $user) {
                 // Broadcast message
-                if ($user->getConn() != $from) $user->getConn()->send($new_msg['message']);
+                if ($user->getConn() != $from) $user->getConn()->send($new_msg['rating']);
                 //$user->getConn()->send($new_msg['message']);
             }
+            */
         }
     }
 
     public function onClose(ConnectionInterface $conn) {
+        $connsRoomId = $this->getRoomId($conn);
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
+        $this->removeUserFromRoom($conn);
+        $this->updateUserList($connsRoomId);
+        $this->removeRoomIfEmpty($connsRoomId);
+        echo "Connection {$conn->resourceId} has disconnected\n";
+    }
 
-        // Remove user from room
+    // if no more users in room, remove room
+    public function removeRoomIfEmpty($room_id) {
+        if (count($this->rooms[$room_id]) === 0) {
+            unset($this->rooms[$room_id]);
+            echo "Removed room! ({$room_id})\n";
+        }
+    }
+
+    // update user points from room_id
+    private function updateUserPoints($username, $rating, $room_id) {
+        $user = $this->rooms[$room_id][$username];
+        $user->setPoints($rating);
+    }
+
+    // get $conn's room_id
+    private function getRoomId($conn) {
         foreach ($this->rooms as $room_id => $room) {
             foreach ($room as $user) {
-                if ($user->getConn() === $conn) {
-                    unset($this->rooms[$room_id][$user->getUsername()]);
+                if ($user->getConn() == $conn) return $room_id;
+            }
+        }
+        return null;
+    }
+
+
+    private function removeUserFromRoom($conn) {
+        foreach ($this->rooms as $room_id => $users) {
+            foreach ($users as $key => $user) {
+                if ($user->getConn() == $conn) {
+                    unset($this->rooms[$room_id][$key]);
                     echo "Removed user from room! ({$conn->resourceId})\n";
                 }
             }
         }
+    }
 
-        // if no more users in room, remove room
-        foreach ($this->rooms as $room_id => $room) {
-            if (count($room) === 0) {
-                unset($this->rooms[$room_id]);
-                echo "Removed room! ({$room_id})\n";
-            }
+    // Adds user to room. If room doesn't exist, create it.
+    private function addUserToRoom($conn, $room_id, $username) {
+        if (!isset($this->rooms[$room_id])) $this->rooms[$room_id] = array();
+        $this->rooms[$room_id][] = new \User($username, $room_id, $conn);
+        echo "Added user to room! ({$conn->resourceId})\n";
+    }
+
+    // Get user list from room as an array users => array of User objects
+    private function getUserList($room_id) {
+        // new array of users => array of User objects from room
+        $users = array();
+        if (!isset($this->rooms[$room_id])) return $users;
+        foreach ($this->rooms[$room_id] as $user) {
+            $users[$user->getUsername()] = $user->getPoints();
         }
-
-        echo "Connection {$conn->resourceId} has disconnected\n";
+        return $users;
+    }
+    
+    // send user list to all clients in the room as JSON
+    private function updateUserList($room_id) {
+        $user_list = $this->getUserList($room_id);
+        $user_list_json = json_encode($user_list);
+        $user_list_json = '{"user_list":' . $user_list_json . '}';
+        foreach ($this->rooms[$room_id] as $user) {
+            $user->getConn()->send($user_list_json);
+        }
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {

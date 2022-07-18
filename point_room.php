@@ -19,6 +19,12 @@ echo "room_id:" . constant("GREETING");
         <input type="text" id="message" name="message" placeholder="Type your message here">
         <input type="submit" value="Send">
     </form>
+
+    <div>
+        <ul id="user-list"></ul>
+    </div>
+
+
     <div>
         <ul id="chat"></ul>
     </div>
