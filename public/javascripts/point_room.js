@@ -11,9 +11,6 @@ let userListArray;
 let colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred' ]
 
 let data = [
-  { percentage : 0.1,
-    fillColor : "indianred",
-    label : "red" }
 ];
 
 
@@ -70,10 +67,12 @@ function evaluateRatingResults(userListValues) {
     let totalOccurrences = userListValues.length;
     let userListValuesHash = {};
     for (let i = 0; i < userListValues.length; i++) {
-        if (userListValuesHash.hasOwnProperty(userListValues[i])) {
-            userListValuesHash[userListValues[i]] += 1;
-        } else {
-            userListValuesHash[userListValues[i]] = 1;
+        if (userListValues[i] != 0) {
+            if (userListValuesHash.hasOwnProperty(userListValues[i])) {
+                userListValuesHash[userListValues[i]] += 1;
+            } else {
+                userListValuesHash[userListValues[i]] = 1;
+            }
         }
     }
 
@@ -157,31 +156,20 @@ HoverPie.make = (function($canvas, data, config){
     
     // Draw the label
     if (data[i].label) {
-      
-      // One for unhovered sectors
       var font = config.labelFontWeight+" "+config.labelFontSize+"px "+config.labelFontFamily;
       var unhoverLabel = new createjs.Text(data[i].label,font,config.labelColor);
       unhoverLabel.textAlign = "center";
       unhoverLabel.textBaseline = "bottom";
       
-      // The label is to be placed such that the center of its baseline
-      // is tangent to a circle of radius r*config.labelRadiusFactor
-      // and a line drawn along the center of the sector
       var unhoverLabelRadius = r*config.labelRadiusFactor;
       var unhoverLabelAngle = cumulativeAngle + sectorAngle/2.0;
       unhoverLabel.x = oX + unhoverLabelRadius * Math.cos(unhoverLabelAngle);
       unhoverLabel.y = oY + unhoverLabelRadius * Math.sin(unhoverLabelAngle);
       unhoverLabel.name = "label";
       
-      // and one for hovered sectors
-      
-      
       container.addChild(unhoverLabel);
     }
     
-    // Draw the description
-    
-    // reposition scale origin and draw origin
     container.regX = oX;
     container.regY = oY;
     container.x = oX;
@@ -190,20 +178,12 @@ HoverPie.make = (function($canvas, data, config){
     cumulativeAngle+=sectorAngle;
     stage.addChild(container);
     stage.update();
-  } // percentages loop
+  }
   
-  // This array tracks the currently-hovered pie sectors.
-  // if it is empty, there are no sectors hovered.
   var hovers = [];
   
   var hover = (function(ids){
-    //console.log(ids,stage.children);
-    
-    // This function is to be called with a list of stage IDs
-    // it will revert any currently-hovered elements to their
-    // original style, and apply hover style to the new set.
-    
-    // any ids in hovers that aren't in ids need to be unhovered
+
     var toUnhover = [];
     for (var i=0; i<hovers.length; i++) {
       if (ids.indexOf(hovers[i]) == -1) {
@@ -235,13 +215,6 @@ HoverPie.make = (function($canvas, data, config){
     stage.update();
   });
   
-  // This binding fires hover() when the mouse hovers over a
-  // new set of pie sectors.
-  // We can't use an addEventListener on each sector because
-  // the hit mask on those shapes is the size of the entire
-  // pie, not the individual sector.
-  // I have not yet tried using canvas clip(). Maybe that's
-  // a better solution? Unsure.
   $canvas.mousemove(function(e){
     var objs = stage.getObjectsUnderPoint(e.clientX,e.clientY);
     var ids = $.map(objs,function(e){ return e.parent.id; });
