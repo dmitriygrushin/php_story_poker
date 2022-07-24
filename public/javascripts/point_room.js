@@ -63,7 +63,8 @@ evaluateRatingForm.addEventListener('submit', (e) => {
     conn.send(JSON.stringify({'evaluate_rating_results': room_id}));
 })
 
-function evaluateRatingResults(userListValues) {
+function evaluateRatingResults(userListValuesArray) {
+    let userListValues = userListValuesArray.filter(function(n) { return n != 0; });
     let totalOccurrences = userListValues.length;
     let userListValuesHash = {};
     for (let i = 0; i < userListValues.length; i++) {
@@ -83,21 +84,7 @@ function evaluateRatingResults(userListValues) {
     }
 
     HoverPie.make($("#myCanvas"), data, {});
-    console.log(data);
-
 }
-
-/*
-function evaluateRatingResults(userListValues) {
-    const userListValuesCount = userListValues.reduce((acc, curr) => {
-        acc[curr] = (acc[curr] || 0) + 1;
-        return acc;
-    },{});
-
-    // return the most common value in the user list
-    return Object.keys(userListValuesCount).reduce((a, b) => userListValuesCount[a] > userListValuesCount[b] ? a : b);
-}
-*/
 
 function createDataObject(percentage, fillColor, label) {
     return {
