@@ -30,21 +30,25 @@ class Chat implements MessageComponentInterface {
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
-        $new_msg = json_decode($msg, true);
+        $event_type = json_decode($msg, true);
 
-        if (isset($new_msg['initial_room_connection'])) {
-            $this->addUserToRoom($from, $new_msg['initial_room_connection'], $new_msg['username']);
-            $this->updateUserList($new_msg['initial_room_connection']);
-        } else if (isset($new_msg['rating'])) {
-            $this->updateUserPoints($new_msg['username'], $new_msg['rating'], $new_msg['room_id']);
-            $this->updateUserList($new_msg['room_id']);
+        // event type handler
+        if (isset($event_type['initial_room_connection'])) {
+            $this->addUserToRoom($from, $event_type['initial_room_connection'], $event_type['username']);
+            $this->updateUserList($event_type['initial_room_connection']);
+        } else if (isset($event_type['rating'])) {
+            $this->updateUserPoints($event_type['username'], $event_type['rating'], $event_type['room_id']);
+            $this->updateUserList($event_type['room_id']);
+        } else if(isset($event_type['evaluate_rating_results'])) {
+            $this->evaluateRatingResults($event_type['evaluate_rating_results']);
         } else {
+            echo "Unknown event type\n";
             /*
             // Send message to all users in the same room
-            foreach ($this->rooms[$new_msg['room_id']] as $user) {
+            foreach ($this->rooms[$event_type['room_id']] as $user) {
                 // Broadcast message
-                if ($user->getConn() != $from) $user->getConn()->send($new_msg['rating']);
-                //$user->getConn()->send($new_msg['message']);
+                if ($user->getConn() != $from) $user->getConn()->send($event_type['rating']);
+                //$user->getConn()->send($event_type['message']);
             }
             */
         }
@@ -60,8 +64,16 @@ class Chat implements MessageComponentInterface {
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
 
+    // sends signal to all clients in the room to evaluate the ratings
+    private function evaluateRatingResults($roomId) {
+        foreach ($this->rooms[$roomId] as $user) {
+            $json_data = json_encode(array('evaluate_rating_results' => true));
+            $user->getConn()->send($json_data);
+        }
+    }
+
     // if no more users in room, remove room
-    public function removeRoomIfEmpty($room_id) {
+    private function removeRoomIfEmpty($room_id) {
         if (count($this->rooms[$room_id]) === 0) {
             unset($this->rooms[$room_id]);
             echo "Removed room! ({$room_id})\n";
@@ -70,8 +82,13 @@ class Chat implements MessageComponentInterface {
 
     // update user points from room_id
     private function updateUserPoints($username, $rating, $room_id) {
-        $user = $this->rooms[$room_id][$username];
-        $user->setPoints($rating);
+        if (is_numeric($rating)) {
+            foreach ($this->rooms[$room_id] as $user) {
+                if ($user->getUsername() === $username) {
+                    $user->setPoints($rating);
+                }
+            }
+        }
     }
 
     // get $conn's room_id
@@ -83,7 +100,6 @@ class Chat implements MessageComponentInterface {
         }
         return null;
     }
-
 
     private function removeUserFromRoom($conn) {
         foreach ($this->rooms as $room_id => $users) {
