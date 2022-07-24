@@ -17,42 +17,43 @@ echo "room_id:" . constant("ROOM_ID");
     <title>Get To The Point</title>
 </head>
 <body>
-    <h1>Get To The Point</h1> 
+    <h1 class="text-center">Get To The Point</h1> 
     <br>
-    <form action="" method="GET" id="rating-form">
-        <label for="message"></label>
-        <input type="text" id="message" name="message" placeholder="Type your message here">
-        <input type="submit" value="Send">
-    </form>
-
-    <form action="" method="GET" id="evaluate-ratings-form">
-        <input type="submit" value="Send">
-    </form>
-
-    <div>
-        <ul id="user-list"></ul>
-    </div>
 
     <div class="rate-buttons">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm"></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:green">1</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:lightgreen">2</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:palegreen">3</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:orange">4</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:coral">5</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:tomato">6</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:orangered">7</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:crimson">8</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:firebrick">9</button></div>
-                <div class="col-sm"><button class="btn btn-primary btn-lg w-100 h-100" style="background-color:darkred">10</button></div>
-                <div class="col-sm"></div>
-            </div>
+        <div class="row">
+            <h2 class="text-center">Point(s): </h2>
+            <div class="col-sm"></div>
+            <div class="col-sm"><button id="1" class="btn btn-primary btn-lg w-100 h-100" style="background-color:green">1</button></div>
+            <div class="col-sm"><button id="2"class="btn btn-primary btn-lg w-100 h-100" style="background-color:lightgreen">2</button></div>
+            <div class="col-sm"><button id="3" class="btn btn-primary btn-lg w-100 h-100" style="background-color:palegreen">3</button></div>
+            <div class="col-sm"><button id="4" class="btn btn-primary btn-lg w-100 h-100" style="background-color:orange">4</button></div>
+            <div class="col-sm"><button id="5" class="btn btn-primary btn-lg w-100 h-100" style="background-color:coral">5</button></div>
+            <div class="col-sm"><button id="6" class="btn btn-primary btn-lg w-100 h-100" style="background-color:tomato">6</button></div>
+            <div class="col-sm"><button id="7" class="btn btn-primary btn-lg w-100 h-100" style="background-color:orangered">7</button></div>
+            <div class="col-sm"><button id="8" class="btn btn-primary btn-lg w-100 h-100" style="background-color:crimson">8</button></div>
+            <div class="col-sm"><button id="9" class="btn btn-primary btn-lg w-100 h-100" style="background-color:firebrick">9</button></div>
+            <div class="col-sm"><button id="10" class="btn btn-primary btn-lg w-100 h-100" style="background-color:darkred">10</button></div>
+            <div class="col-sm"></div>
         </div>
     </div>
 
-    <canvas id="myCanvas" width="350" height="350"></canvas>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <div>
+                    <ul id="user-list"></ul>
+                </div>
+            </div>
+            <div class="col-sm">
+                <canvas id="myCanvas" width="350" height="350"></canvas>
+            </div>
+        </div>
+        <form action="" method="GET" id="evaluate-ratings-form">
+            <input class="btn btn-info btn-lg" type="submit" value="Get Results!">
+        </form>
+    </div>
+
 
 </body>
     <script src="public/javascripts/point_room.js"></script>

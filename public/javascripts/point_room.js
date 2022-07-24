@@ -1,18 +1,21 @@
-var conn = new WebSocket('ws://localhost:8080');
-const ratingForm = document.getElementById('rating-form');
+let conn = new WebSocket('ws://localhost:8080');
 const evaluateRatingForm = document.getElementById('evaluate-ratings-form');
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
+const colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred' ]
 let userListArray;
+let data = [];
 
-let colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred' ]
-
-let data = [
-];
-
+// for all buttons with id 1 to 10, add a listener to the button
+for (let i = 1; i <= 10; i++) {
+    const button = document.getElementById(i);
+    button.addEventListener('click', function () {
+        const rating = i;
+        conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+    });
+}
 
 conn.onopen = function(e) {
     console.log("Connection established!");
@@ -32,6 +35,7 @@ conn.onmessage = function(e) {
         userListTag.innerHTML = '';
         for (let [key, value] of Object.entries(userListArray)) {
             const listItem = document.createElement('li');
+            listItem.classList.add("display-5");
             listItem.innerHTML = `${key} (${value})`;
             userListTag.appendChild(listItem);
         }
@@ -48,15 +52,6 @@ conn.onmessage = function(e) {
         }
     }
 };
-
-// form set on submit event to send message to server via websocket connection
-ratingForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let rating = document.getElementById('message').value;
-    console.log(rating);
-    conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
-    document.getElementById('message').value = '';
-});
 
 evaluateRatingForm.addEventListener('submit', (e) => {
     e.preventDefault();
