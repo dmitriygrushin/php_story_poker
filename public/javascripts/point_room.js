@@ -4,18 +4,13 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
-const colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred' ]
+const colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred', 'lavender', 'thistle', 'plum', 'violet', 'orchid', 'fuchsia', 'magenta', 'mediumpurple', 'purple', 'indigo']
 let userListArray;
 let data = [];
 
-// for all buttons with id 1 to 10, add a listener to the button
-for (let i = 1; i <= 10; i++) {
-    const button = document.getElementById(i);
-    button.addEventListener('click', function () {
-        const rating = i;
-        conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
-    });
-}
+addEventListenerToButtons();
+
+
 
 conn.onopen = function(e) {
     console.log("Connection established!");
@@ -79,6 +74,36 @@ function evaluateRatingResults(userListValuesArray) {
     }
 
     HoverPie.make($("#myCanvas"), data, {});
+}
+
+function addEventListenerToButtons() {
+  for (let i = 1; i <= 10; i++) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  for (let i = 15; i <= 30; i += 5) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  for (let i = 40; i <= 60; i+=10) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  document.getElementById(75).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 75, 'room_id': room_id})); });
+  document.getElementById(90).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 90, 'room_id': room_id})); });
+  document.getElementById(100).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 100, 'room_id': room_id})); });
 }
 
 function createDataObject(percentage, fillColor, label) {
