@@ -1,6 +1,6 @@
 <?php 
 define("ROOM_ID", $_GET['room_id']);
-echo "room_id:" . constant("ROOM_ID");
+echo "room_id: " . constant("ROOM_ID");
 ?>
 
 <!DOCTYPE html>
@@ -14,10 +14,10 @@ echo "room_id:" . constant("ROOM_ID");
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="http://code.createjs.com/easeljs-0.6.1.min.js"></script>
 
-    <title>Get To The Point</title>
+    <title>Story Bluff</title>
 </head>
-<body>
-    <h1 class="text-center display-1">Get To The Point!</h1> 
+<body style="background-color:#f7f7f9;">
+    <h1 class="text-center display-1">Story Bluff</h1> 
     <div class="container border border-3 border-primary rounded-3">
         <div class="row">
             <div class="col-sm-2 border-end border-3 border-primary rounded-3">
