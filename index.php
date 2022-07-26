@@ -15,12 +15,12 @@
 <body style="background-color:#f7f7f9;">
  <div class="row">
     <div class="w-50 mx-auto mt-5">
-        <h1 class="display-1 text-center">Story Bluff</h1> 
+        <h1 class="display-1 text-center">----- Story Bluff -----</h1> 
         <br>
         <form action="./point_room.php" method="GET">
             <div class="text-center"> 
                 <label class="display-3" for="username"><u>Username</u></label>
-                <input class ="form-control form-control-lg" type="text" id="username" name="username" placeholder="Type your username here">
+                <input class ="form-control form-control-lg" type="text" id="username" name="username" placeholder="Type your username here" required>
             </div>
 
             <div id="room_id_input">
@@ -33,6 +33,14 @@
         </form>
     </div>
   </div>
+
+<footer class="fixed-bottom bg-light text-center text-lg-start">
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    © 2022 Copyright: Dmitriy Grushin
+  </div>
+  <!-- Copyright -->
+</footer>
 </body>
     <script src="public/javascripts/index.js"></script>
 </html>

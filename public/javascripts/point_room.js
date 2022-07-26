@@ -4,13 +4,11 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
-const colors = ['black', 'gray', 'teal', 'purple', 'green', 'olive', 'navy', 'maroon', 'blue', 'indianred', 'lavender', 'thistle', 'plum', 'violet', 'orchid', 'fuchsia', 'magenta', 'mediumpurple', 'purple', 'indigo']
+const colors = ['purple', 'indianred', 'green', 'mediumpurple', 'orchid', 'lavender', 'maroon', 'indigo', 'magenta', 'olive', 'blue', 'teal', 'gray', 'purple', 'black', 'fuchsia', 'plum', 'thistle', 'violet', 'navy'];
 let userListArray;
 let data = [];
 
 addEventListenerToButtons();
-
-
 
 conn.onopen = function(e) {
     console.log("Connection established!");
@@ -30,7 +28,10 @@ conn.onmessage = function(e) {
         userListTag.innerHTML = '';
         for (let [key, value] of Object.entries(userListArray)) {
             const listItem = document.createElement('li');
-            listItem.classList.add("display-5");
+            listItem.style.fontSize = '1.3em';
+            if (value == 0) {
+              value = '✘';
+            }
             listItem.innerHTML = `${key} (${value})`;
             userListTag.appendChild(listItem);
         }
