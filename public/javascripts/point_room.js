@@ -4,9 +4,14 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
+const isCreator = urlParams.get('is_creator');
 const colors = ['purple', 'indianred', 'green', 'mediumpurple', 'orchid', 'lavender', 'maroon', 'indigo', 'magenta', 'olive', 'blue', 'teal', 'gray', 'purple', 'black', 'fuchsia', 'plum', 'thistle', 'violet', 'navy'];
 let userListArray;
 let data = [];
+let HoverPie = {};
+
+evaluateRatingForm.style.display = 'none';
+if (isCreator == 'true') evaluateRatingForm.style.display = 'block';
 
 addEventListenerToButtons();
 
@@ -115,7 +120,6 @@ function createDataObject(percentage, fillColor, label) {
     }
 }
 
-let HoverPie = {};
 HoverPie.config = {
   canvasPadding : 25,
   hoverScaleX : 1.1,

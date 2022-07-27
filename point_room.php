@@ -76,8 +76,8 @@ define("USERNAME", $_GET['username']);
                         <canvas id="myCanvas" width="350" height="350"></canvas>
                     </div>
                     <div class="text-center">
-                        <form action="" method="GET" id="evaluate-ratings-form">
-                            <input class="btn btn-info btn-lg w-75 shadow-lg" type="submit" value="Call the Bluff!">
+                        <form action="" method="GET" id="evaluate-ratings-form"> 
+                            <input class="btn btn-info btn-lg w-75 shadow-lg" type="submit" value="Call the Bluff!"> 
                         </form>
                     </div>
                 </div>

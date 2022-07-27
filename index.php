@@ -30,6 +30,7 @@
             <div class="text-center">
                 <input class="btn btn-lg btn-info" type="submit" value="Create Room">
             </div>
+            <input type="hidden" name="is_creator" value="true">
         </form>
     </div>
   </div>
