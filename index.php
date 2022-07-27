@@ -12,7 +12,7 @@
 
     <title>Story Bluff</title>
 </head>
-<body style="background-color:#f7f7f9;">
+<body class="d-flex flex-column min-vh-100" style="background-color:#f7f7f9;">
  <div class="row">
     <div class="w-50 mx-auto mt-5">
         <h1 class="display-1 text-center">----- Story Bluff -----</h1> 
@@ -22,20 +22,24 @@
                 <label class="display-3" for="username"><u>Username</u></label>
                 <input class ="form-control form-control-lg" type="text" id="username" name="username" placeholder="Type your username here" required>
             </div>
+            <?php if (isset($_GET['joining'])) { ?>
+                <div id="room_id_input">
+                    <label for="room_id"></label>
+                    <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
+                </div>
+            <?php } else { ?>
+                <div id="room_id_input">
+                    <label for="room_id"></label>
+                    <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
+                </div>
+            <?php } ?>
 
-            <div id="room_id_input">
-                <label for="room_id"></label>
-                <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
-            </div>
-            <div class="text-center">
-                <input class="btn btn-lg btn-info" type="submit" value="Create Room">
-            </div>
-            <input type="hidden" name="is_creator" value="true">
+            <input type="hidden" name="moderator" value="true">
         </form>
     </div>
   </div>
 
-<footer class="fixed-bottom bg-light text-center text-lg-start">
+<footer class="bg-light text-center text-lg-start mt-auto">
   <!-- Copyright -->
   <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
     © 2022 Copyright: Dmitriy Grushin

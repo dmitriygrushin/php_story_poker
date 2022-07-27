@@ -1,17 +1,22 @@
 let conn = new WebSocket('ws://localhost:8080');
 const evaluateRatingForm = document.getElementById('evaluate-ratings-form');
+const evaluateNewRating = document.getElementById('evaluate-new-rating');
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
-const isCreator = urlParams.get('is_creator');
+const isModerator = urlParams.get('moderator');
+const copyLinkButton = document.getElementById('copy-link-button');
 const colors = ['purple', 'indianred', 'green', 'mediumpurple', 'orchid', 'lavender', 'maroon', 'indigo', 'magenta', 'olive', 'blue', 'teal', 'gray', 'purple', 'black', 'fuchsia', 'plum', 'thistle', 'violet', 'navy'];
 let userListArray;
 let data = [];
 let HoverPie = {};
 
+evaluateNewRating.style.display = 'none';
 evaluateRatingForm.style.display = 'none';
-if (isCreator == 'true') evaluateRatingForm.style.display = 'block';
+if (isModerator == 'true') evaluateRatingForm.style.display = 'block';
+
+
 
 addEventListenerToButtons();
 
@@ -51,13 +56,37 @@ conn.onmessage = function(e) {
             const userListValues = Object.values(userListArray);
             evaluateRatingResults(userListValues)
         }
+    } else if (event.hasOwnProperty('refresh')) {
+        if (event.refresh == true) window.location.reload();
     }
 };
 
 evaluateRatingForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    evaluateNewRating.style.display = 'block';
+    evaluateRatingForm.style.display = 'none';
     conn.send(JSON.stringify({'evaluate_rating_results': room_id}));
 })
+
+evaluateNewRating.addEventListener('submit', (e) => {
+    e.preventDefault();
+    evaluateNewRating.style.display = 'none';
+    evaluateRatingForm.style.display = 'block';
+    conn.send(JSON.stringify({'refresh_room_id': room_id}));
+})
+
+copyLinkButton.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const copyToClipboard = str => {
+      if (navigator && navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(str);
+      return Promise.reject('The Clipboard API is not available.');
+    };
+    copyToClipboard(window.location.href);
+    alert("Copied the text: " + window.location.href);
+})
+
+
+
 
 function evaluateRatingResults(userListValuesArray) {
     let userListValues = userListValuesArray.filter(function(n) { return n != 0; });

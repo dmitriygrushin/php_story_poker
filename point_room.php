@@ -17,7 +17,7 @@ define("USERNAME", $_GET['username']);
 
     <title>Story Bluff</title>
 </head>
-<body style="background-color:#f7f7f9;">
+<body class="d-flex flex-column min-vh-100"style="background-color:#f7f7f9;">
  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">--- Story Bluff ---</a>
@@ -39,6 +39,7 @@ define("USERNAME", $_GET['username']);
         <div class="row">
             <div class="col-sm-3 border-end border-3 border-primary rounded-3">
                 <div>
+                    <h2 class="text-center">[<u>Users</u>]</h2>
                     <ul id="user-list"></ul>
                 </div>
             </div>
@@ -69,6 +70,9 @@ define("USERNAME", $_GET['username']);
                         <div class="col-sm"><button id="90" class="btn btn-primary w-100 h-100" style="background-color:purple">90</button></div>
                         <div class="col-sm"><button id="100" class="btn btn-primary w-100 h-100" style="background-color:indigo">100</button></div>
                     </div>
+                    <div class="text-center">
+                        <input id="copy-link-button" type="submit" value="Copy Invite Link!"> 
+                    </div>
                     <h2 class="text-center">---------------------------------------------------</h2>
                 </div>
                 <div class="container">
@@ -76,6 +80,10 @@ define("USERNAME", $_GET['username']);
                         <canvas id="myCanvas" width="350" height="350"></canvas>
                     </div>
                     <div class="text-center">
+                        <form action="" method="GET" id="evaluate-new-rating"> 
+                            <input class="btn btn-danger btn-lg w-75 shadow-lg" type="submit" value="Call Another Bluff!"> 
+                        </form>
+
                         <form action="" method="GET" id="evaluate-ratings-form"> 
                             <input class="btn btn-info btn-lg w-75 shadow-lg" type="submit" value="Call the Bluff!"> 
                         </form>
@@ -87,7 +95,7 @@ define("USERNAME", $_GET['username']);
     </div>
 
 </body>
-<footer class="bg-light text-center text-lg-start mt-5">
+<footer class="bg-light text-center text-lg-start mt-auto">
   <!-- Copyright -->
   <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
     © 2022 Copyright: Dmitriy Grushin

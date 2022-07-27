@@ -39,8 +39,10 @@ class Chat implements MessageComponentInterface {
         } else if (isset($event_type['rating'])) {
             $this->updateUserPoints($event_type['username'], $event_type['rating'], $event_type['room_id']);
             $this->updateUserList($event_type['room_id']);
-        } else if(isset($event_type['evaluate_rating_results'])) {
+        } else if (isset($event_type['evaluate_rating_results'])) {
             $this->evaluateRatingResults($event_type['evaluate_rating_results']);
+        } else if (isset($event_type['refresh_room_id'])) {
+            $this->sendRefresh($event_type['refresh_room_id']);
         } else {
             echo "Unknown event type\n";
             /*
@@ -63,6 +65,13 @@ class Chat implements MessageComponentInterface {
         $this->removeRoomIfEmpty($connsRoomId);
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
+
+    // send refresh to room_id
+    private function sendRefresh($room_id) {
+        foreach ($this->rooms[$room_id] as $user) {
+            $user->getConn()->send(json_encode(array('refresh' => true)));
+        }
+    } 
 
     // sends signal to all clients in the room to evaluate the ratings
     private function evaluateRatingResults($roomId) {
