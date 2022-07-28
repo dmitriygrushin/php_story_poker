@@ -178,6 +178,12 @@ conn.onmessage = function(e) {
     } else if (event.hasOwnProperty('evaluate_rating_results')) {
         if (event.evaluate_rating_results == true) {
             const userListValues = Object.values(userListArray);
+            const rateButtons = document.getElementsByClassName('rate-button');
+            // disable rateButtons
+            for (let i = 0; i < rateButtons.length; i++) {
+                rateButtons[i].disabled = true;
+            }
+
             evaluateRatingResults(userListValues)
         }
     } else if (event.hasOwnProperty('refresh')) {
@@ -203,7 +209,6 @@ copyLinkButton.addEventListener('click', (e) => {
     e.preventDefault();
     console.log('this is clikced');
     navigator.clipboard.writeText(`http://localhost:3000/index.php?joining=${room_id}`);
-    alert("Copied the text: ");
 })
 
 
