@@ -207,8 +207,15 @@ evaluateNewRating.addEventListener('submit', (e) => {
 
 copyLinkButton.addEventListener('click', (e) => {
     e.preventDefault();
-    console.log('this is clikced');
-    navigator.clipboard.writeText(`http://localhost:3000/index.php?joining=${room_id}`);
+    const url = window.location.href;
+    const { hostname } = new URL(url);
+    if (hostname == 'localhost') {
+      navigator.clipboard.writeText(`localhost:3000/index.php?joining=${room_id}`);
+    } else {
+      navigator.clipboard.writeText(`${hostname}//localhost:3000/index.php?joining=${room_id}`);
+    }
+
+
 })
 
 
