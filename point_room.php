@@ -1,6 +1,7 @@
 <?php 
+$username = filter_var($_GET['username'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 define("ROOM_ID", $_GET['room_id']);
-define("USERNAME", $_GET['username']);
+define("USERNAME", $username);
 //echo "room_id: " . constant("ROOM_ID");
 ?>
 

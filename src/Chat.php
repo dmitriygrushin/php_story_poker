@@ -91,6 +91,7 @@ class Chat implements MessageComponentInterface {
 
     // update user points from room_id
     private function updateUserPoints($username, $rating, $room_id) {
+        $username = filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if (is_numeric($rating)) {
             foreach ($this->rooms[$room_id] as $user) {
                 if ($user->getUsername() === $username) {
@@ -123,6 +124,7 @@ class Chat implements MessageComponentInterface {
 
     // Adds user to room. If room doesn't exist, create it.
     private function addUserToRoom($conn, $room_id, $username) {
+        $username = filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         if (!isset($this->rooms[$room_id])) $this->rooms[$room_id] = array();
         $this->rooms[$room_id][] = new \User($username, $room_id, $conn);
         echo "Added user to room! ({$conn->resourceId})\n";
