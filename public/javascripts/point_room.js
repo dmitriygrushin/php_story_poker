@@ -6,148 +6,12 @@ const urlParams = new URLSearchParams(queryString);
 const room_id = urlParams.get('room_id');
 const username = urlParams.get('username');
 const isModerator = urlParams.get('moderator');
-const copyLinkButton = document.getElementById('copy-link-button');
+const copyLinkButton = document.getElementById('copy-link-button'); // copy-link-button
 const colors = ['purple', 'indianred', 'green', 'mediumpurple', 'orchid', 'lavender', 'maroon', 'indigo', 'magenta', 'olive', 'blue', 'teal', 'gray', 'purple', 'black', 'fuchsia', 'plum', 'thistle', 'violet', 'navy'];
 let userListArray;
 let data = [];
 let HoverPie = {};
 
-evaluateNewRating.style.display = 'none';
-evaluateRatingForm.style.display = 'none';
-if (isModerator == 'true') evaluateRatingForm.style.display = 'block';
-
-
-
-addEventListenerToButtons();
-
-conn.onopen = function(e) {
-    console.log("Connection established!");
-    conn.send(JSON.stringify({'initial_room_connection': room_id, 'username': username}));
-};
-
-conn.onmessage = function(e) {
-    console.log(e.data);
-    const event = JSON.parse(e.data);   
-    const userListTag = document.getElementById('user-list');
-
-    // if event contains 'user-list' then update the user list
-    if (event.hasOwnProperty('user_list')) {
-        // get the user list from the event
-        userListArray = event['user_list'];
-        // clear the user list tag
-        userListTag.innerHTML = '';
-        for (let [key, value] of Object.entries(userListArray)) {
-            const listItem = document.createElement('li');
-            listItem.style.fontSize = '1.3em';
-            if (value == 0) {
-              value = '✘';
-            }
-            listItem.innerHTML = `${key} (${value})`;
-            userListTag.appendChild(listItem);
-        }
-
-        // get all values from the user list and put them in an array
-        //const userListValues = Object.values(userListArray);
-
-        // get all values from user list and put them in a hash map and count the number of times each value appears
-
-    } else if (event.hasOwnProperty('evaluate_rating_results')) {
-        if (event.evaluate_rating_results == true) {
-            const userListValues = Object.values(userListArray);
-            evaluateRatingResults(userListValues)
-        }
-    } else if (event.hasOwnProperty('refresh')) {
-        if (event.refresh == true) window.location.reload();
-    }
-};
-
-evaluateRatingForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    evaluateNewRating.style.display = 'block';
-    evaluateRatingForm.style.display = 'none';
-    conn.send(JSON.stringify({'evaluate_rating_results': room_id}));
-})
-
-evaluateNewRating.addEventListener('submit', (e) => {
-    e.preventDefault();
-    evaluateNewRating.style.display = 'none';
-    evaluateRatingForm.style.display = 'block';
-    conn.send(JSON.stringify({'refresh_room_id': room_id}));
-})
-
-copyLinkButton.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const copyToClipboard = str => {
-      if (navigator && navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(str);
-      return Promise.reject('The Clipboard API is not available.');
-    };
-    copyToClipboard(window.location.href);
-    alert("Copied the text: " + window.location.href);
-})
-
-
-
-
-function evaluateRatingResults(userListValuesArray) {
-    let userListValues = userListValuesArray.filter(function(n) { return n != 0; });
-    let totalOccurrences = userListValues.length;
-    let userListValuesHash = {};
-    for (let i = 0; i < userListValues.length; i++) {
-        if (userListValues[i] != 0) {
-            if (userListValuesHash.hasOwnProperty(userListValues[i])) {
-                userListValuesHash[userListValues[i]] += 1;
-            } else {
-                userListValuesHash[userListValues[i]] = 1;
-            }
-        }
-    }
-
-    let i = 0;
-    // key: #, value: occurrences
-    for (let [key, value] of Object.entries(userListValuesHash)) {
-        data.push(createDataObject(value / totalOccurrences, colors[i++], key));
-    }
-
-    HoverPie.make($("#myCanvas"), data, {});
-}
-
-function addEventListenerToButtons() {
-  for (let i = 1; i <= 10; i++) {
-      const button = document.getElementById(i);
-      button.addEventListener('click', function () {
-          const rating = i;
-          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
-      });
-  }
-
-  for (let i = 15; i <= 30; i += 5) {
-      const button = document.getElementById(i);
-      button.addEventListener('click', function () {
-          const rating = i;
-          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
-      });
-  }
-
-  for (let i = 40; i <= 60; i+=10) {
-      const button = document.getElementById(i);
-      button.addEventListener('click', function () {
-          const rating = i;
-          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
-      });
-  }
-
-  document.getElementById(75).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 75, 'room_id': room_id})); });
-  document.getElementById(90).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 90, 'room_id': room_id})); });
-  document.getElementById(100).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 100, 'room_id': room_id})); });
-}
-
-function createDataObject(percentage, fillColor, label) {
-    return {
-        percentage : percentage,
-        fillColor : fillColor,
-        label : label
-    }
-}
 
 HoverPie.config = {
   canvasPadding : 25,
@@ -273,3 +137,135 @@ HoverPie.make = (function($canvas, data, config){
     }
   });
 });
+
+evaluateNewRating.style.display = 'none';
+evaluateRatingForm.style.display = 'none';
+if (isModerator == 'true') evaluateRatingForm.style.display = 'block';
+
+addEventListenerToButtons();
+
+conn.onopen = function(e) {
+    console.log("Connection established!");
+    conn.send(JSON.stringify({'initial_room_connection': room_id, 'username': username}));
+};
+
+conn.onmessage = function(e) {
+    console.log(e.data);
+    const event = JSON.parse(e.data);   
+    const userListTag = document.getElementById('user-list');
+
+    // if event contains 'user-list' then update the user list
+    if (event.hasOwnProperty('user_list')) {
+        // get the user list from the event
+        userListArray = event['user_list'];
+        // clear the user list tag
+        userListTag.innerHTML = '';
+        for (let [key, value] of Object.entries(userListArray)) {
+            const listItem = document.createElement('li');
+            listItem.style.fontSize = '1.3em';
+            if (value == 0) {
+              value = '✘';
+            }
+            listItem.innerHTML = `${key} (${value})`;
+            userListTag.appendChild(listItem);
+        }
+
+        // get all values from the user list and put them in an array
+        //const userListValues = Object.values(userListArray);
+
+        // get all values from user list and put them in a hash map and count the number of times each value appears
+
+    } else if (event.hasOwnProperty('evaluate_rating_results')) {
+        if (event.evaluate_rating_results == true) {
+            const userListValues = Object.values(userListArray);
+            evaluateRatingResults(userListValues)
+        }
+    } else if (event.hasOwnProperty('refresh')) {
+        if (event.refresh == true) window.location.reload();
+    }
+};
+
+evaluateRatingForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    evaluateNewRating.style.display = 'block';
+    evaluateRatingForm.style.display = 'none';
+    conn.send(JSON.stringify({'evaluate_rating_results': room_id}));
+})
+
+evaluateNewRating.addEventListener('submit', (e) => {
+    e.preventDefault();
+    evaluateNewRating.style.display = 'none';
+    evaluateRatingForm.style.display = 'block';
+    conn.send(JSON.stringify({'refresh_room_id': room_id}));
+})
+
+copyLinkButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('this is clikced');
+    navigator.clipboard.writeText(`http://localhost:3000/index.php?joining=${room_id}`);
+    alert("Copied the text: ");
+})
+
+
+
+
+function evaluateRatingResults(userListValuesArray) {
+    let userListValues = userListValuesArray.filter(function(n) { return n != 0; });
+    let totalOccurrences = userListValues.length;
+    let userListValuesHash = {};
+    for (let i = 0; i < userListValues.length; i++) {
+        if (userListValues[i] != 0) {
+            if (userListValuesHash.hasOwnProperty(userListValues[i])) {
+                userListValuesHash[userListValues[i]] += 1;
+            } else {
+                userListValuesHash[userListValues[i]] = 1;
+            }
+        }
+    }
+
+    let i = 0;
+    // key: #, value: occurrences
+    for (let [key, value] of Object.entries(userListValuesHash)) {
+        data.push(createDataObject(value / totalOccurrences, colors[i++], key));
+    }
+
+    HoverPie.make($("#myCanvas"), data, {});
+}
+
+function addEventListenerToButtons() {
+  for (let i = 1; i <= 10; i++) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  for (let i = 15; i <= 30; i += 5) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  for (let i = 40; i <= 60; i+=10) {
+      const button = document.getElementById(i);
+      button.addEventListener('click', function () {
+          const rating = i;
+          conn.send(JSON.stringify({'username': username, 'rating': rating, 'room_id': room_id}));
+      });
+  }
+
+  document.getElementById(75).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 75, 'room_id': room_id})); });
+  document.getElementById(90).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 90, 'room_id': room_id})); });
+  document.getElementById(100).addEventListener('click', function () { conn.send(JSON.stringify({'username': username, 'rating': 100, 'room_id': room_id})); });
+}
+
+function createDataObject(percentage, fillColor, label) {
+    return {
+        percentage : percentage,
+        fillColor : fillColor,
+        label : label
+    }
+}

@@ -25,18 +25,22 @@
             <?php if (isset($_GET['joining'])) { ?>
                 <div id="room_id_input">
                     <label for="room_id"></label>
-                    <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
+                    <input value="<?php echo $_GET['joining']; ?>" type="text" name="room_id" placeholder="the room_id you're joining is in this input" readonly hidden>
+                </div>
+                <div class="text-center">
+                    <input class="btn btn-lg btn-info" type="submit" value="Join Room">
                 </div>
             <?php } else { ?>
                 <div id="room_id_input">
                     <label for="room_id"></label>
-                    <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
+                    <input type="text" id="room_id" name="room_id" placeholder="your room id is in this input" readonly hidden>
+                </div>
+                <input type="hidden" name="moderator" value="true">
+                <div class="text-center">
+                    <input class="btn btn-lg btn-info" type="submit" value="Create Room">
                 </div>
             <?php } ?>
-            <div class="text-center">
-                <input class="btn btn-lg btn-info" type="submit" value="Create Room">
-            </div>
-            <input type="hidden" name="moderator" value="true">
+
         </form>
     </div>
   </div>

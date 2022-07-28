@@ -70,9 +70,12 @@ define("USERNAME", $_GET['username']);
                         <div class="col-sm"><button id="90" class="btn btn-primary w-100 h-100" style="background-color:purple">90</button></div>
                         <div class="col-sm"><button id="100" class="btn btn-primary w-100 h-100" style="background-color:indigo">100</button></div>
                     </div>
-                    <div class="text-center">
-                        <input id="copy-link-button" type="submit" value="Copy Invite Link!"> 
-                    </div>
+                    <?php if (isset($_GET['moderator'])) { ?>
+                        <div class="text-center">
+                            <input class="btn btn-primary" id="copy-link-button" type="submit" value="Copy Invite Link!"> 
+                        </div>
+                    <?php } ?>
+                        
                     <h2 class="text-center">---------------------------------------------------</h2>
                 </div>
                 <div class="container">
