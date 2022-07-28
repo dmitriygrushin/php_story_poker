@@ -33,7 +33,9 @@
                     <input type="text" id="room_id" name="room_id" placeholder="Type your room id here" readonly hidden>
                 </div>
             <?php } ?>
-
+            <div class="text-center">
+                <input class="btn btn-lg btn-info" type="submit" value="Create Room">
+            </div>
             <input type="hidden" name="moderator" value="true">
         </form>
     </div>
